@@ -1,0 +1,60 @@
+CREATE DATABASE IF NOT EXISTS violence_reporting_db
+  CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE violence_reporting_db;
+
+CREATE TABLE users (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  email VARCHAR(150) NOT NULL UNIQUE,
+  phone VARCHAR(50) NULL,
+  role ENUM('ADMIN','PIC') NOT NULL DEFAULT 'PIC',
+  password_hash VARCHAR(255) NOT NULL,
+  status ENUM('ACTIVE','INACTIVE') NOT NULL DEFAULT 'ACTIVE',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE reports (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  tracking_code CHAR(12) NOT NULL UNIQUE,
+  report_type ENUM('GBV','CHILD_ABUSE','SEXUAL_HARASSMENT','OTHER') NOT NULL,
+  title VARCHAR(200) NOT NULL,
+  description TEXT NOT NULL,
+  incident_location VARCHAR(200),
+  incident_date DATE NULL,
+  reporter_name VARCHAR(100) NULL,
+  reporter_contact VARCHAR(150) NULL,
+  reporter_email VARCHAR(150) NULL,
+  is_anonymous TINYINT(1) NOT NULL DEFAULT 0,
+  evidence_path VARCHAR(255) NULL,
+  status ENUM('RECEIVED','UNDER_REVIEW','ASSIGNED','IN_PROGRESS','RESOLVED','REJECTED') NOT NULL DEFAULT 'RECEIVED',
+  assigned_to INT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP NULL,
+  FOREIGN KEY (assigned_to) REFERENCES users(id) ON DELETE SET NULL
+);
+
+CREATE TABLE messages (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  report_id BIGINT NOT NULL,
+  sender_user_id INT NULL,
+  to_email VARCHAR(150) NULL,
+  to_phone VARCHAR(50) NULL,
+  channel ENUM('EMAIL','SMS','NOTE') NOT NULL,
+  subject VARCHAR(200) NULL,
+  body TEXT NOT NULL,
+  sent_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (report_id) REFERENCES reports(id) ON DELETE CASCADE,
+  FOREIGN KEY (sender_user_id) REFERENCES users(id) ON DELETE SET NULL
+);
+
+CREATE TABLE settings (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(100) NOT NULL UNIQUE,
+  value TEXT NOT NULL,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+INSERT INTO users (name, email, role, password_hash)
+VALUES ('System Admin', 'admin@example.com', 'ADMIN',
+        '$2y$10$6wkbw2t2WqS9N1m8sJvCFeQeBzIYkYQW3d3oxYf6c7lH7r85Yx0fG');
+-- Password is Admin@123

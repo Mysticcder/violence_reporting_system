@@ -1,0 +1,222 @@
+/* Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", Roboto, Arial, sans-serif;
+}
+
+body {
+  background: #f9fafb;
+  color: #333;
+  line-height: 1.6;
+}
+
+/* Header */
+header nav {
+  background: linear-gradient(90deg, #9b59b6, #8e44ad); /* lavender → purple gradient */
+  padding: 14px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+header nav a {
+  color: #fff;
+  margin-right: 20px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: opacity 0.2s;
+}
+
+header nav a:hover {
+  opacity: 0.8;
+}
+
+/* Container */
+.container {
+  max-width: 1000px;
+  margin: 30px auto;
+  background: #fff;
+  padding: 25px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+/* Headings */
+h2 {
+  margin-bottom: 20px;
+  color: #6a0dad; /* deep purple */
+  font-weight: 600;
+}
+
+/* Forms */
+label {
+  display: block;
+  margin-top: 12px;
+  font-weight: 500;
+}
+
+input, select, textarea {
+  width: 100%;
+  padding: 10px;
+  margin-top: 6px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  transition: border-color 0.2s;
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: #9b59b6; /* lavender accent */
+  outline: none;
+}
+
+/* Buttons */
+button {
+  margin-top: 18px;
+  padding: 10px 22px;
+  background: #8e44ad; /* purple */
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 0.2s;
+}
+
+button:hover {
+  background: #6a0dad; /* deeper purple */
+}
+
+/* Tables */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+table th, table td {
+  padding: 12px;
+  border-bottom: 1px solid #eee;
+  text-align: left;
+}
+
+table th {
+  background: #f3e8ff; /* soft lavender background */
+  color: #6a0dad;      /* purple text */
+}
+
+/* Alerts */
+.notice {
+  background: #f5f3ff; /* lavender background */
+  border: 1px solid #8e44ad;
+  padding: 12px;
+  margin: 15px 0;
+  border-radius: 6px;
+  color: #4b0082; /* indigo text */
+}
+
+.error {
+  background: #fef2f2;
+  border: 1px solid #dc2626;
+  padding: 12px;
+  margin: 15px 0;
+  border-radius: 6px;
+  color: #b91c1c;
+}
+
+/* Footer */
+footer {
+  text-align: center;
+  margin-top: 40px;
+  padding: 15px;
+  background: #f3f4f6;
+  border-top: 1px solid #e5e7eb;
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.dashboard {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 220px;
+  background: #6a0dad; /* purple sidebar */
+  color: #fff;
+  padding: 20px;
+}
+
+.sidebar .logo {
+  font-size: 20px;
+  margin-bottom: 30px;
+}
+
+.sidebar nav a {
+  display: block;
+  color: #fff;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: background 0.2s;
+}
+
+.sidebar nav a:hover {
+  background: #8e44ad; /* lighter purple hover */
+}
+
+.sidebar nav .logout {
+  margin-top: 20px;
+  background: #dc2626;
+}
+
+.sidebar nav .logout:hover {
+  background: #b91c1c;
+}
+
+/* Main content */
+.main {
+  flex: 1;
+  background: #f9fafb;
+  padding: 20px;
+}
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.cards {
+  display: flex;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.card {
+  flex: 1;
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  text-align: center;
+}
+
+.card h3 {
+  margin-bottom: 10px;
+  color: #8e44ad; /* purple accent */
+}
+
+.canvas {
+  max-width: 400px;   /* shrink width */
+  max-height: 200px;  /* shrink height */
+}
+
+.location-details canvas {
+  max-width: 300px;
+  max-height: 150px;
+}
