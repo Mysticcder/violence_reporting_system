@@ -23,14 +23,17 @@ $config = require __DIR__ . '/../config/config.php';
     <h2>Submit a report</h2>
     <form action="submit_report.php" method="post" enctype="multipart/form-data">
       <input type="hidden" name="csrf" value="<?= csrf_token(); ?>">
-      <label>Type of incident</label>
-      <select name="report_type" required>
+
+      <!-- Incident Type -->
+      <label for="report_type">Type of incident</label>
+      <select name="report_type" id="report_type" required>
+        <option value="">-- Select Type --</option>
         <option value="GBV">GBV</option>
         <option value="PHYSICAL_HARASSMENT">Physical Harassment</option>
-        <option value="SEXUAL_ASSAULT">Sexual assault</option>
-        <option value="SEXUAL_HARASSMENT">Sexual harassment</option>
+        <option value="SEXUAL_ASSAULT">Sexual Assault</option>
+        <option value="SEXUAL_HARASSMENT">Sexual Harassment</option>
         <option value="INTIMATE_PARTNER_VIOLENCE">Intimate Partner Violence</option>
-        <option value="CAT_CALLING">Cat calling</option>
+        <option value="CAT_CALLING">Cat Calling</option>
         <option value="OUTING">Outing</option>
         <option value="THREATS">Threats</option>
         <option value="PHYSICAL_ASSAULT">Physical Assault</option>
@@ -39,29 +42,29 @@ $config = require __DIR__ . '/../config/config.php';
         <option value="OTHER">Other</option>
       </select>
 
-      <label>Title</label>
-      <input type="text" name="title" placeholder="Brief summary" required>
+      <!-- Title -->
+      <label for="title">Title</label>
+      <input type="text" id="title" name="title" placeholder="Brief summary" required>
 
-      <label>Description</label>
-      <textarea name="description" rows="6" placeholder="Provide details" required></textarea>
+      <!-- Description -->
+      <label for="description">Description</label>
+      <textarea id="description" name="description" rows="6" placeholder="Provide details" required></textarea>
 
-      <label>Incident location</label>
-      <input type="text" name="incident_location" placeholder="e.g., Thika, Kiambu County">
+      <!-- Location -->
+      <label for="incident_location">Incident location</label>
+      <input type="text" id="incident_location" name="incident_location" placeholder="e.g., Thika, Kiambu County" required>
 
-      <label>Incident date</label>
-      <input type="date" name="incident_date">
+      <!-- Date -->
+      <label for="incident_date">Incident date</label>
+      <input type="date" id="incident_date" name="incident_date">
 
-      <label>Submit anonymously?</label>
-      <select name="is_anonymous" required>
-        <option value="1">Yes</option>
-        <option value="0">No</option>
-      </select>
+      <!-- Reporter Info -->
+      <label for="reporter_name">Full Name / Preferred Name</label>
+      <input type="text" id="reporter_name" name="reporter_name" placeholder="Your name" required>
 
-      <label>Full Name / Preferred Name</label>
-      <input type="text" name="reporter_name" placeholder="Optional">
-
-      <label>Pronouns</label>
-      <select name="pronouns">
+      <label for="pronouns">Pronouns</label>
+      <select id="pronouns" name="pronouns">
+        <option value="">Select pronouns</option>
         <option value="SHE/HER">She/Her</option>
         <option value="HE/HIM">He/Him</option>
         <option value="THEY/THEM">They/Them</option>
@@ -70,17 +73,18 @@ $config = require __DIR__ . '/../config/config.php';
         <option value="OTHER">Other</option>
       </select>
 
-      <label>Gender</label>
-      <select name="gender">
+      <label for="gender">Gender</label>
+      <select id="gender" name="gender">
         <option value="">Select gender</option>
-        <option value="cisgender">CisGender</option>
+        <option value="cisgender">Cisgender</option>
         <option value="transman">TransMan</option>
         <option value="transwoman">TransWoman</option>
         <option value="nonbinary">Non-Binary</option>
       </select>
 
-      <label>Sexual Orientation</label>
-      <select name="sexual_orientation">
+      <label for="sexual_orientation">Sexual Orientation</label>
+      <select id="sexual_orientation" name="sexual_orientation">
+        <option value="">Select orientation</option>
         <option value="lesbian">Lesbian</option>
         <option value="queer">Queer</option>
         <option value="bisexual">Bisexual</option>
@@ -88,14 +92,16 @@ $config = require __DIR__ . '/../config/config.php';
         <option value="asexual">Asexual</option>
       </select>
 
-      <label>Phone Number</label>
-      <input type="text" name="reporter_contact" placeholder="Optional">
+      <!-- Contact -->
+      <label for="reporter_contact">Phone Number</label>
+      <input type="text" id="reporter_contact" name="reporter_contact" placeholder="e.g., +254712345678" required pattern="^\+2547\d{8}$" title="Format: +2547XXXXXXXX">
 
-      <label>Email</label>
-      <input type="email" name="reporter_email" placeholder="Optional">
+      <label for="reporter_email">Email</label>
+      <input type="email" id="reporter_email" name="reporter_email" placeholder="e.g., yourname@example.com" required>
 
-      <label>Evidence file (jpg, png, pdf, docx)</label>
-      <input type="file" name="evidence">
+      <!-- Evidence -->
+      <label for="evidence">Evidence file (jpg, png, pdf, docx)</label>
+      <input type="file" id="evidence" name="evidence" accept=".jpg,.jpeg,.png,.pdf,.docx">
 
       <button type="submit">Submit report</button>
     </form>
