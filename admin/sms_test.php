@@ -1,17 +1,23 @@
-?<?php
+<?php
 require_once __DIR__ . '/../vendor/autoload.php';
 use AfricasTalking\SDK\AfricasTalking;
 
-$username = "leha_sms"; // ✅ Your live app username
-$apiKey   = "atsk_241d30fa8d0a5ecb7a8bd531975bf9124f18535aeab4c33f8f5360696ef0004cc872dbb7"; // ✅ From app settings
+// Load credentials
+$config   = require __DIR__ . '/../config/config.php';
+$username = $config['username'];
+$apiKey   = $config['apiKey'];
+
+// Diagnostic tip: confirm credentials being used
+echo "Using username: $username<br>";
+echo "Using API key: " . substr($apiKey, 0, 6) . "...<br>";
 
 $AT  = new AfricasTalking($username, $apiKey);
 $sms = $AT->sms();
 
 try {
     $result = $sms->send([
-        'to'      => '+254748959831', 
-        'message' => 'Test message from LEHA system'
+        'to'      => '+254728035910',
+        'message' => 'Test message from LEHA system (Live Mode)'
     ]);
     echo "<pre>";
     print_r($result);

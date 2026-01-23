@@ -1,0 +1,15 @@
+# Ignore environment file
+.env
+
+# Composer dependencies
+/vendor/
+
+# Node dependencies
+/node_modules/
+
+# User uploads
+/uploads/
+
+# Logs and system files
+*.log
+.DS_Store

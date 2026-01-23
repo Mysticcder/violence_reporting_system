@@ -36,25 +36,42 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
   // ✅ Build and send SMS
   if ($pic && !empty($pic['phone'])) {
+    // Format phone number into +2547XXXXXXXX
+    function formatPhone($number) {
+        $number = trim($number);
+        if (preg_match('/^0\d{9}$/', $number)) {
+            return '+254' . substr($number, 1);
+        }
+        return $number;
+    }
+    $recipientPhone = formatPhone($pic['phone']);
+
     $message = "New Case Assigned\n"
              . "Tracking ID: " . $report['tracking_code'] . "\n"
              . "Title: " . $report['title'] . "\n"
              . "Type: " . $report['report_type'] . "\n"
              . "Location: " . $report['incident_location'];
 
-    // ✅ Initialize Africa's Talking SDK
-    $username = "sandbox"; 
-    $apiKey   = "atsk_93d04d22a298f34ec9a7f6e01cdd6ca92af41e55d9696bfe4efadd132d6b98966d11e5dd"; 
+    // ✅ Load credentials from config.php
+    $config   = require __DIR__ . '/../config/config.php';
+    $username = $config['username'];
+    $apiKey   = $config['apiKey'];
 
     $AT  = new AfricasTalking($username, $apiKey);
     $sms = $AT->sms();
 
     try {
       $result = $sms->send([
-        'to'      => $pic['phone'],
-        'message' => $message
+        'to'      => $recipientPhone,
+        'message' => $message,
+        'from'    => 'AFRICASTKNG' // ✅ Explicit sender ID
       ]);
-      error_log("SMS sent to {$pic['phone']}");
+
+      // ✅ Optional: log delivery status
+      $recipient = $result['data']->SMSMessageData->Recipients[0] ?? null;
+      if ($recipient) {
+        error_log("SMS to {$recipient->number} → {$recipient->status} ({$recipient->statusCode})");
+      }
     } catch (Exception $e) {
       error_log("SMS Error: " . $e->getMessage());
     }

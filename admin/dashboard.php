@@ -5,19 +5,26 @@ require_login();
 require_once __DIR__ . '/../config/db.php';
 
 // Monthly case details with PICs
-$locationDetails = $pdo->query("SELECT r.incident_location, r.report_type, u.name AS pic_name, COUNT(*) as total
-                                FROM reports r
-                                LEFT JOIN users u ON r.assigned_to = u.id
-                                WHERE MONTH(r.created_at) = MONTH(CURRENT_DATE())
-                                GROUP BY r.incident_location, r.report_type, u.name
-                                ORDER BY r.incident_location")->fetchAll();
+$locationDetails = $pdo->query("
+    SELECT r.incident_location, r.report_type, u.name AS pic_name, COUNT(*) as total
+    FROM reports r
+    LEFT JOIN users u ON r.assigned_to = u.id
+    WHERE MONTH(r.created_at) = MONTH(CURRENT_DATE())
+      AND YEAR(r.created_at) = YEAR(CURRENT_DATE())
+    GROUP BY r.incident_location, r.report_type, u.name
+    ORDER BY r.incident_location
+")->fetchAll(PDO::FETCH_ASSOC);
 
-$yearlyCases = $pdo->query("SELECT incident_location, report_type, COUNT(*) as total 
-                            FROM reports 
-                            WHERE YEAR(created_at) = YEAR(CURRENT_DATE()) 
-                            GROUP BY incident_location, report_type")->fetchAll();
+// ✅ Yearly cases grouped by type + month
+$yearlyCases = $pdo->query("
+    SELECT report_type, MONTH(created_at) AS month, COUNT(*) AS total
+    FROM reports
+    WHERE YEAR(created_at) = YEAR(CURRENT_DATE())
+    GROUP BY report_type, month
+    ORDER BY month, report_type
+")->fetchAll(PDO::FETCH_ASSOC);
 
-// Group by location
+// Group by location for monthly summary
 $groupedLocations = [];
 foreach ($locationDetails as $row) {
   $loc = $row['incident_location'];
@@ -33,7 +40,6 @@ foreach ($locationDetails as $row) {
   <link rel="stylesheet" href="../public/assets/css/style.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
-    /* ✅ Two-column summary rows */
     .summary-row {
       display: flex;
       justify-content: space-between;
@@ -65,8 +71,8 @@ foreach ($locationDetails as $row) {
       text-align: left;
     }
     canvas {
-      max-width: 400px;
-      max-height: 200px;
+      max-width: 600px;
+      max-height: 300px;
     }
   </style>
 </head>
@@ -154,31 +160,41 @@ foreach ($locationDetails as $row) {
           <?php endforeach; ?>
         </div>
 
-        <!-- 📊 Yearly Case Distribution -->
+        <!-- 📊 Yearly Case Distribution (by type + month) -->
         <h2>Yearly Case Distribution</h2>
         <canvas id="caseChart"></canvas>
         <script>
-          const ctx = document.getElementById('caseChart').getContext('2d');
-          const caseChart = new Chart(ctx, {
+          const yearlyRaw = <?= json_encode($yearlyCases) ?>;
+          const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+          const caseTypes = [...new Set(yearlyRaw.map(item => item.report_type))];
+
+          const colorMap = {
+            'Assault': '#FF6384',
+            'Theft': '#36A2EB',
+            'Harassment': '#FFCE56',
+            'Fraud': '#4BC0C0',
+            'Abuse': '#9966FF'
+          };
+
+          const datasets = caseTypes.map(type => {
+            return {
+              label: type,
+              data: months.map((m,i) => {
+                const found = yearlyRaw.find(item => item.report_type === type && item.month == (i+1));
+                return found ? parseInt(found.total) : 0;
+              }),
+              backgroundColor: colorMap[type] || '#6a0dad'
+            };
+          });
+
+          new Chart(document.getElementById('caseChart').getContext('2d'), {
             type: 'bar',
-            data: {
-              labels: [
-                <?php foreach ($yearlyCases as $row): ?>
-                  '<?= $row['incident_location'] ?> <?= $row['report_type'] ?>',
-                <?php endforeach; ?>
-              ],
-              datasets: [{
-                label: 'Cases in <?= date("Y") ?>',
-                data: [
-                  <?php foreach ($yearlyCases as $row): ?>
-                    <?= $row['total'] ?>,
-                  <?php endforeach; ?>
-                ],
-                backgroundColor: '#6a0dad',
-                barThickness: 20
-              }]
-            },
-            options: { responsive: true, scales: { y: { beginAtZero: true } } }
+            data: { labels: months, datasets: datasets },
+            options: {
+              responsive: true,
+              plugins: { title: { display: true, text: 'Cases per Type per Month (<?= date("Y") ?>)' } },
+              scales: { y: { beginAtZero: true } }
+            }
           });
         </script>
       </section>
